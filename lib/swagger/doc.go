@@ -1,4 +1,4 @@
-/*Package swagger Cloud Foundry CC Bridge Stager
+/*Package swagger Cloud Foundry CC Bridge Nsync
 
     Schemes:
       http

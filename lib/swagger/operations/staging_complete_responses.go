@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/cf-furnace/k8s-stager/lib/model"
+	"github.com/cf-furnace/k8s-nsync/lib/model"
 )
 
 /*StagingCompleteOK Status OK

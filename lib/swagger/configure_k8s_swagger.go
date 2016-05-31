@@ -8,14 +8,14 @@ import (
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 
-	"github.com/cf-furnace/k8s-stager/lib/swagger/operations"
+	"github.com/cf-furnace/k8s-nsync/lib/swagger/operations"
 )
 
 func configureFlags(api *operations.K8sSwaggerAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
-// ConfigureAPI configures the Stager API server
+// ConfigureAPI configures the Nsync API server
 func ConfigureAPI(api *operations.K8sSwaggerAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError

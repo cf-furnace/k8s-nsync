@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/cf-furnace/k8s-stager/lib/model"
+	"github.com/cf-furnace/k8s-nsync/lib/model"
 )
 
 // NewStageParams creates a new StageParams object

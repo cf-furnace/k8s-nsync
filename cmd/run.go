@@ -3,9 +3,9 @@ package cmd
 import (
 	"net/http"
 
-	"github.com/cf-furnace/k8s-stager/lib"
-	"github.com/cf-furnace/k8s-stager/lib/swagger"
-	"github.com/cf-furnace/k8s-stager/lib/swagger/operations"
+	"github.com/cf-furnace/k8s-nsync/lib"
+	"github.com/cf-furnace/k8s-nsync/lib/swagger"
+	"github.com/cf-furnace/k8s-nsync/lib/swagger/operations"
 
 	"github.com/go-openapi/loads"
 	"github.com/pivotal-golang/lager"
@@ -21,7 +21,7 @@ var (
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "Runs the Kubernetes Cloud Foundry Stager",
+	Short: "Runs the Kubernetes Cloud Foundry Nsync",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// Load configuration
@@ -41,9 +41,9 @@ var runCmd = &cobra.Command{
 
 		api := operations.NewK8sSwaggerAPI(swaggerSpec)
 
-		stagerServer := swagger.ConfigureAPI(api)
+		nsyncServer := swagger.ConfigureAPI(api)
 
-		err = http.ListenAndServe(flagListen, stagerServer)
+		err = http.ListenAndServe(flagListen, nsyncServer)
 		if err != nil {
 			logger.Fatal("listening-failed", err)
 		}
