@@ -11,58 +11,46 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/cf-furnace/k8s-nsync/lib/model"
 )
 
-// NewStageParams creates a new StageParams object
+// NewDesireTaskParams creates a new DesireTaskParams object
 // with the default values initialized.
-func NewStageParams() StageParams {
+func NewDesireTaskParams() DesireTaskParams {
 	var ()
-	return StageParams{}
+	return DesireTaskParams{}
 }
 
-// StageParams contains all the bound params for the stage operation
+// DesireTaskParams contains all the bound params for the desire task operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters stage
-type StageParams struct {
+// swagger:parameters desireTask
+type DesireTaskParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request
 
 	/*
 	  Required: true
-	  In: path
-	*/
-	StagingGUID string
-	/*
-	  Required: true
 	  In: body
 	*/
-	StagingRequest *model.StagingRequestFromCC
+	TaskRequest *model.TaskRequestFromCC
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls
-func (o *StageParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+func (o *DesireTaskParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 	o.HTTPRequest = r
 
-	rStagingGUID, rhkStagingGUID, _ := route.Params.GetOK("staging_guid")
-	if err := o.bindStagingGUID(rStagingGUID, rhkStagingGUID, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body model.StagingRequestFromCC
+		var body model.TaskRequestFromCC
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
-				res = append(res, errors.Required("stagingRequest", "body"))
+				res = append(res, errors.Required("taskRequest", "body"))
 			} else {
-				res = append(res, errors.NewParseError("stagingRequest", "body", "", err))
+				res = append(res, errors.NewParseError("taskRequest", "body", "", err))
 			}
 
 		} else {
@@ -71,27 +59,16 @@ func (o *StageParams) BindRequest(r *http.Request, route *middleware.MatchedRout
 			}
 
 			if len(res) == 0 {
-				o.StagingRequest = &body
+				o.TaskRequest = &body
 			}
 		}
 
 	} else {
-		res = append(res, errors.Required("stagingRequest", "body"))
+		res = append(res, errors.Required("taskRequest", "body"))
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (o *StageParams) bindStagingGUID(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	o.StagingGUID = raw
-
 	return nil
 }

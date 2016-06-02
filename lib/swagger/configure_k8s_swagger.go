@@ -11,6 +11,8 @@ import (
 	"github.com/cf-furnace/k8s-nsync/lib/swagger/operations"
 )
 
+// This file is safe to edit. Once it exists it will not be overwritten
+
 func configureFlags(api *operations.K8sSwaggerAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
@@ -20,18 +22,30 @@ func ConfigureAPI(api *operations.K8sSwaggerAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
+	// Set your custom logger if needed. Default one is log.Printf
+	// Expected interface func(string, ...interface{})
+	//
+	// Example:
+	// s.api.Logger = log.Printf
+
 	api.JSONConsumer = runtime.JSONConsumer()
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.StageHandler = operations.StageHandlerFunc(func(params operations.StageParams) middleware.Responder {
-		return middleware.NotImplemented("operation .Stage has not yet been implemented")
+	api.CancelTaskHandler = operations.CancelTaskHandlerFunc(func(params operations.CancelTaskParams) middleware.Responder {
+		return middleware.NotImplemented("operation .CancelTask has not yet been implemented")
 	})
-	api.StagingCompleteHandler = operations.StagingCompleteHandlerFunc(func(params operations.StagingCompleteParams) middleware.Responder {
-		return middleware.NotImplemented("operation .StagingComplete has not yet been implemented")
+	api.DesireAppHandler = operations.DesireAppHandlerFunc(func(params operations.DesireAppParams) middleware.Responder {
+		return middleware.NotImplemented("operation .DesireApp has not yet been implemented")
 	})
-	api.StopStagingHandler = operations.StopStagingHandlerFunc(func(params operations.StopStagingParams) middleware.Responder {
-		return middleware.NotImplemented("operation .StopStaging has not yet been implemented")
+	api.DesireTaskHandler = operations.DesireTaskHandlerFunc(func(params operations.DesireTaskParams) middleware.Responder {
+		return middleware.NotImplemented("operation .DesireTask has not yet been implemented")
+	})
+	api.KillIndexHandler = operations.KillIndexHandlerFunc(func(params operations.KillIndexParams) middleware.Responder {
+		return middleware.NotImplemented("operation .KillIndex has not yet been implemented")
+	})
+	api.StopAppHandler = operations.StopAppHandlerFunc(func(params operations.StopAppParams) middleware.Responder {
+		return middleware.NotImplemented("operation .StopApp has not yet been implemented")
 	})
 
 	api.ServerShutdown = func() {}

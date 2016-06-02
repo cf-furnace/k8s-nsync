@@ -44,12 +44,16 @@ type K8sSwaggerAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
-	// StageHandler sets the operation handler for the stage operation
-	StageHandler StageHandler
-	// StagingCompleteHandler sets the operation handler for the staging complete operation
-	StagingCompleteHandler StagingCompleteHandler
-	// StopStagingHandler sets the operation handler for the stop staging operation
-	StopStagingHandler StopStagingHandler
+	// CancelTaskHandler sets the operation handler for the cancel task operation
+	CancelTaskHandler CancelTaskHandler
+	// DesireAppHandler sets the operation handler for the desire app operation
+	DesireAppHandler DesireAppHandler
+	// DesireTaskHandler sets the operation handler for the desire task operation
+	DesireTaskHandler DesireTaskHandler
+	// KillIndexHandler sets the operation handler for the kill index operation
+	KillIndexHandler KillIndexHandler
+	// StopAppHandler sets the operation handler for the stop app operation
+	StopAppHandler StopAppHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -108,16 +112,24 @@ func (o *K8sSwaggerAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.StageHandler == nil {
-		unregistered = append(unregistered, "StageHandler")
+	if o.CancelTaskHandler == nil {
+		unregistered = append(unregistered, "CancelTaskHandler")
 	}
 
-	if o.StagingCompleteHandler == nil {
-		unregistered = append(unregistered, "StagingCompleteHandler")
+	if o.DesireAppHandler == nil {
+		unregistered = append(unregistered, "DesireAppHandler")
 	}
 
-	if o.StopStagingHandler == nil {
-		unregistered = append(unregistered, "StopStagingHandler")
+	if o.DesireTaskHandler == nil {
+		unregistered = append(unregistered, "DesireTaskHandler")
+	}
+
+	if o.KillIndexHandler == nil {
+		unregistered = append(unregistered, "KillIndexHandler")
+	}
+
+	if o.StopAppHandler == nil {
+		unregistered = append(unregistered, "StopAppHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -193,20 +205,30 @@ func (o *K8sSwaggerAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["DELETE"] == nil {
+		o.handlers[strings.ToUpper("DELETE")] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tasks/{task_guid}"] = NewCancelTask(o.context, o.CancelTaskHandler)
+
 	if o.handlers["PUT"] == nil {
 		o.handlers[strings.ToUpper("PUT")] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/staging/{staging_guid}"] = NewStage(o.context, o.StageHandler)
+	o.handlers["PUT"]["/apps/{process_guid}"] = NewDesireApp(o.context, o.DesireAppHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers[strings.ToUpper("POST")] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/staging/{staging_guid}"] = NewStagingComplete(o.context, o.StagingCompleteHandler)
+	o.handlers["POST"]["/tasks"] = NewDesireTask(o.context, o.DesireTaskHandler)
 
 	if o.handlers["DELETE"] == nil {
 		o.handlers[strings.ToUpper("DELETE")] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/staging/{staging_guid}"] = NewStopStaging(o.context, o.StopStagingHandler)
+	o.handlers["DELETE"]["/apps/{process_guid}/index/{index}"] = NewKillIndex(o.context, o.KillIndexHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers[strings.ToUpper("DELETE")] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/apps/{process_guid}"] = NewStopApp(o.context, o.StopAppHandler)
 
 }
 

@@ -16,18 +16,18 @@ import (
 	"github.com/cf-furnace/k8s-nsync/lib/model"
 )
 
-// NewStagingCompleteParams creates a new StagingCompleteParams object
+// NewDesireAppParams creates a new DesireAppParams object
 // with the default values initialized.
-func NewStagingCompleteParams() StagingCompleteParams {
+func NewDesireAppParams() DesireAppParams {
 	var ()
-	return StagingCompleteParams{}
+	return DesireAppParams{}
 }
 
-// StagingCompleteParams contains all the bound params for the staging complete operation
+// DesireAppParams contains all the bound params for the desire app operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters stagingComplete
-type StagingCompleteParams struct {
+// swagger:parameters desireApp
+type DesireAppParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request
@@ -36,28 +36,28 @@ type StagingCompleteParams struct {
 	  Required: true
 	  In: body
 	*/
-	StagingCompleteRequest *model.TaskCallbackResponse
+	DesireAppRequest *model.DesireAppRequestFromCC
 	/*
 	  Required: true
 	  In: path
 	*/
-	StagingGUID string
+	ProcessGUID string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls
-func (o *StagingCompleteParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+func (o *DesireAppParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 	o.HTTPRequest = r
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body model.TaskCallbackResponse
+		var body model.DesireAppRequestFromCC
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
-				res = append(res, errors.Required("stagingCompleteRequest", "body"))
+				res = append(res, errors.Required("desireAppRequest", "body"))
 			} else {
-				res = append(res, errors.NewParseError("stagingCompleteRequest", "body", "", err))
+				res = append(res, errors.NewParseError("desireAppRequest", "body", "", err))
 			}
 
 		} else {
@@ -66,16 +66,16 @@ func (o *StagingCompleteParams) BindRequest(r *http.Request, route *middleware.M
 			}
 
 			if len(res) == 0 {
-				o.StagingCompleteRequest = &body
+				o.DesireAppRequest = &body
 			}
 		}
 
 	} else {
-		res = append(res, errors.Required("stagingCompleteRequest", "body"))
+		res = append(res, errors.Required("desireAppRequest", "body"))
 	}
 
-	rStagingGUID, rhkStagingGUID, _ := route.Params.GetOK("staging_guid")
-	if err := o.bindStagingGUID(rStagingGUID, rhkStagingGUID, route.Formats); err != nil {
+	rProcessGUID, rhkProcessGUID, _ := route.Params.GetOK("process_guid")
+	if err := o.bindProcessGUID(rProcessGUID, rhkProcessGUID, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -85,13 +85,13 @@ func (o *StagingCompleteParams) BindRequest(r *http.Request, route *middleware.M
 	return nil
 }
 
-func (o *StagingCompleteParams) bindStagingGUID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+func (o *DesireAppParams) bindProcessGUID(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
 
-	o.StagingGUID = raw
+	o.ProcessGUID = raw
 
 	return nil
 }
